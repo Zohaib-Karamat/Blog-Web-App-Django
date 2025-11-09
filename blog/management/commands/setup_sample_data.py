@@ -16,35 +16,62 @@ class Command(BaseCommand):
         
         self.stdout.write(self.style.SUCCESS('Setting up sample data...'))
         
-        # Create categories
-        categories_data = [
-            ('Technology', 'Explore the latest in tech, programming, and innovation'),
-            ('Lifestyle', 'Tips and insights for living your best life'),
-            ('Travel', 'Discover amazing destinations around the world'),
-            ('Food', 'Delicious recipes and culinary adventures'),
-            ('Health', 'Wellness tips and health advice'),
-        ]
+        try:
+            # Create categories
+            categories_data = [
+                ('Technology', 'Explore the latest in tech, programming, and innovation'),
+                ('Lifestyle', 'Tips and insights for living your best life'),
+                ('Travel', 'Discover amazing destinations around the world'),
+                ('Food', 'Delicious recipes and culinary adventures'),
+                ('Health', 'Wellness tips and health advice'),
+            ]
+            
+            categories = []
+            for name, desc in categories_data:
+                cat, created = Category.objects.get_or_create(
+                    name=name,
+                    defaults={'description': desc}
+                )
+                categories.append(cat)
+                if created:
+                    msg = f'✅ Created category: {name}'
+                    sys.stderr.write(msg + '\n')
+                    sys.stderr.flush()
+                    self.stdout.write(self.style.SUCCESS(msg))
+                else:
+                    msg = f'⚠️  Category exists: {name}'
+                    sys.stderr.write(msg + '\n')
+                    sys.stderr.flush()
+                    self.stdout.write(self.style.WARNING(msg))
+            
+            sys.stderr.write(f'Total categories: {Category.objects.count()}\n')
+            sys.stderr.flush()
+        except Exception as e:
+            sys.stderr.write(f'ERROR creating categories: {str(e)}\n')
+            sys.stderr.flush()
+            self.stdout.write(self.style.ERROR(f'Error: {str(e)}'))
         
-        categories = []
-        for name, desc in categories_data:
-            cat, created = Category.objects.get_or_create(
-                name=name,
-                defaults={'description': desc}
-            )
-            categories.append(cat)
-            if created:
-                self.stdout.write(f'Created category: {name}')
-        
-        # Create tags
-        tags_data = ['Python', 'Django', 'Web Development', 'Tutorial', 
-                     'Tips', 'Guide', 'Beginner', 'Advanced', 'Best Practices']
-        
-        tags = []
-        for tag_name in tags_data:
-            tag, created = Tag.objects.get_or_create(name=tag_name)
-            tags.append(tag)
-            if created:
-                self.stdout.write(f'Created tag: {tag_name}')
+        try:
+            # Create tags
+            tags_data = ['Python', 'Django', 'Web Development', 'Tutorial', 
+                         'Tips', 'Guide', 'Beginner', 'Advanced', 'Best Practices']
+            
+            tags = []
+            for tag_name in tags_data:
+                tag, created = Tag.objects.get_or_create(name=tag_name)
+                tags.append(tag)
+                if created:
+                    msg = f'✅ Created tag: {tag_name}'
+                    sys.stderr.write(msg + '\n')
+                    sys.stderr.flush()
+                    self.stdout.write(self.style.SUCCESS(msg))
+            
+            sys.stderr.write(f'Total tags: {Tag.objects.count()}\n')
+            sys.stderr.flush()
+        except Exception as e:
+            sys.stderr.write(f'ERROR creating tags: {str(e)}\n')
+            sys.stderr.flush()
+            self.stdout.write(self.style.ERROR(f'Error: {str(e)}'))
         
         # Update admin user profile to be admin role
         try:
