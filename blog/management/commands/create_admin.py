@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from accounts.models import Profile
+import time
 
 
 class Command(BaseCommand):
@@ -10,6 +11,8 @@ class Command(BaseCommand):
         username = 'zohaib'
         email = 'zohaib@admin.com'
         password = 'zohaib123'
+        
+        self.stdout.write(self.style.WARNING('Starting create_admin command...'))
         
         try:
             # Delete existing user if exists
@@ -23,7 +26,10 @@ class Command(BaseCommand):
                 email=email,
                 password=password
             )
-            self.stdout.write(self.style.SUCCESS(f'Created superuser: {username}'))
+            self.stdout.write(self.style.SUCCESS(f'✅ Created superuser: {username}'))
+            
+            # Wait for signal to create profile
+            time.sleep(0.5)
             
             # Create or update profile
             profile, created = Profile.objects.get_or_create(
@@ -37,12 +43,18 @@ class Command(BaseCommand):
                 profile.role = 'admin'
                 profile.save()
             
-            self.stdout.write(self.style.SUCCESS(f'Profile set to admin role'))
-            self.stdout.write(self.style.SUCCESS(''))
-            self.stdout.write(self.style.SUCCESS('=== LOGIN CREDENTIALS ==='))
+            self.stdout.write(self.style.SUCCESS(f'✅ Profile set to admin role'))
+            self.stdout.write('')
+            self.stdout.write(self.style.SUCCESS('='*50))
+            self.stdout.write(self.style.SUCCESS('🎉 ADMIN USER CREATED SUCCESSFULLY!'))
+            self.stdout.write(self.style.SUCCESS('='*50))
             self.stdout.write(self.style.SUCCESS(f'Username: {username}'))
             self.stdout.write(self.style.SUCCESS(f'Password: {password}'))
-            self.stdout.write(self.style.SUCCESS('========================'))
+            self.stdout.write(self.style.SUCCESS(f'Email: {email}'))
+            self.stdout.write(self.style.SUCCESS('='*50))
+            self.stdout.write('')
             
         except Exception as e:
-            self.stdout.write(self.style.ERROR(f'Error: {str(e)}'))
+            self.stdout.write(self.style.ERROR(f'❌ Error creating admin: {str(e)}'))
+            import traceback
+            self.stdout.write(self.style.ERROR(traceback.format_exc()))
