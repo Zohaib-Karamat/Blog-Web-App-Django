@@ -9,7 +9,11 @@ cmds = [
 ]
 
 [phases.build]
-cmds = [". /opt/venv/bin/activate && python manage.py collectstatic --noinput"]
+cmds = [
+    ". /opt/venv/bin/activate && python manage.py collectstatic --noinput",
+    ". /opt/venv/bin/activate && python manage.py migrate || true",
+    ". /opt/venv/bin/activate && python manage.py create_admin || true"
+]
 
 [start]
-cmd = ". /opt/venv/bin/activate && python manage.py migrate && echo 'Running create_admin command...' && python manage.py create_admin && echo 'Finished create_admin command' && python manage.py collectstatic --noinput && gunicorn advanced_blog.wsgi:application --bind 0.0.0.0:$PORT"
+cmd = ". /opt/venv/bin/activate && python manage.py migrate && python manage.py create_admin && gunicorn advanced_blog.wsgi:application --bind 0.0.0.0:$PORT"
