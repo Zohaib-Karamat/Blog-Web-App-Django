@@ -12,8 +12,9 @@ cmds = [
 cmds = [
     ". /opt/venv/bin/activate && python manage.py collectstatic --noinput",
     ". /opt/venv/bin/activate && python manage.py migrate || true",
-    ". /opt/venv/bin/activate && python manage.py create_admin || true"
+    ". /opt/venv/bin/activate && python manage.py create_admin || true",
+    ". /opt/venv/bin/activate && python manage.py setup_sample_data || true"
 ]
 
 [start]
-cmd = ". /opt/venv/bin/activate && python manage.py migrate && python manage.py create_admin && python manage.py setup_sample_data && gunicorn advanced_blog.wsgi:application --bind 0.0.0.0:$PORT"
+cmd = ". /opt/venv/bin/activate && gunicorn advanced_blog.wsgi:application --bind 0.0.0.0:$PORT"
