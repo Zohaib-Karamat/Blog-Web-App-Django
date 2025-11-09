@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile - TechPulse{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    <div class="max-w-3xl mx-auto">
+        <div class="bg-white rounded-xl shadow-xl p-8">
+            <h1 class="text-4xl font-bold mb-8 gradient-text">
+                <i class="fas fa-user-edit"></i> Edit Profile
+            </h1>
+            
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ user_form.username.id_for_label }}" class="block text-gray-700 font-semibold mb-2">
+                            <i class="fas fa-user"></i> Username
+                        </label>
+                        {{ user_form.username }}
+                        {% if user_form.username.errors %}
+                        <p class="text-red-500 text-sm mt-1">{{ user_form.username.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ user_form.email.id_for_label }}" class="block text-gray-700 font-semibold mb-2">
+                            <i class="fas fa-envelope"></i> Email
+                        </label>
+                        {{ user_form.email }}
+                        {% if user_form.email.errors %}
+                        <p class="text-red-500 text-sm mt-1">{{ user_form.email.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ user_form.first_name.id_for_label }}" class="block text-gray-700 font-semibold mb-2">
+                            <i class="fas fa-id-card"></i> First Name
+                        </label>
+                        {{ user_form.first_name }}
+                        {% if user_form.first_name.errors %}
+                        <p class="text-red-500 text-sm mt-1">{{ user_form.first_name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ user_form.last_name.id_for_label }}" class="block text-gray-700 font-semibold mb-2">
+                            <i class="fas fa-id-card"></i> Last Name
+                        </label>
+                        {{ user_form.last_name }}
+                        {% if user_form.last_name.errors %}
+                        <p class="text-red-500 text-sm mt-1">{{ user_form.last_name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="{{ profile_form.bio.id_for_label }}" class="block text-gray-700 font-semibold mb-2">
+                        <i class="fas fa-info-circle"></i> Bio
+                    </label>
+                    {{ profile_form.bio }}
+                    {% if profile_form.bio.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ profile_form.bio.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ profile_form.avatar.id_for_label }}" class="block text-gray-700 font-semibold mb-2">
+                        <i class="fas fa-image"></i> Avatar
+                    </label>
+                    {{ profile_form.avatar }}
+                    {% if profile_form.avatar.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ profile_form.avatar.errors.0 }}</p>
+                    {% endif %}
+                    {% if user.profile.avatar %}
+                    <div class="mt-3">
+                        <img src="{{ user.profile.avatar.url }}" alt="Current avatar" class="w-24 h-24 rounded-full shadow-md">
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ profile_form.website.id_for_label }}" class="block text-gray-700 font-semibold mb-2">
+                        <i class="fas fa-globe"></i> Website
+                    </label>
+                    {{ profile_form.website }}
+                    {% if profile_form.website.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ profile_form.website.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ profile_form.twitter.id_for_label }}" class="block text-gray-700 font-semibold mb-2">
+                            <i class="fab fa-twitter"></i> Twitter Handle
+                        </label>
+                        {{ profile_form.twitter }}
+                        {% if profile_form.twitter.errors %}
+                        <p class="text-red-500 text-sm mt-1">{{ profile_form.twitter.errors.0 }}</p>
+                        {% endif %}
+                        <p class="text-gray-500 text-sm mt-1">Without @ symbol</p>
+                    </div>
+                    
+                    <div>
+                        <label for="{{ profile_form.linkedin.id_for_label }}" class="block text-gray-700 font-semibold mb-2">
+                            <i class="fab fa-linkedin"></i> LinkedIn Username
+                        </label>
+                        {{ profile_form.linkedin }}
+                        {% if profile_form.linkedin.errors %}
+                        <p class="text-red-500 text-sm mt-1">{{ profile_form.linkedin.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="flex gap-4 pt-6 border-t border-gray-200">
+                    <button type="submit" class="btn-gradient text-white px-8 py-3 rounded-lg font-semibold">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <a href="{% url 'accounts:profile' %}" class="bg-gray-300 text-gray-700 px-8 py-3 rounded-lg hover:bg-gray-400 transition-all duration-200 font-semibold">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    input[type="text"], input[type="email"], textarea, input[type="url"] {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        transition: all 0.2s;
+    }
+    
+    input[type="text"]:focus, input[type="email"]:focus, textarea:focus, input[type="url"]:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+</style>
+{% endblock %}

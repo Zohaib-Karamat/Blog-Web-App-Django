@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - TechPulse{% endblock %}
+
+{% block content %}
+<div class="gradient-bg text-white py-12">
+    <div class="container mx-auto px-4">
+        <h1 class="text-4xl font-bold mb-2">
+            <i class="fas fa-tachometer-alt"></i> Author Dashboard
+        </h1>
+        <p class="text-gray-200">Manage your posts and track your performance</p>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 py-12">
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition-all duration-300">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-4 bg-purple-100 rounded-full">
+                    <i class="fas fa-newspaper text-purple-600 text-3xl"></i>
+                </div>
+                <span class="text-4xl font-bold gradient-text">{{ total_posts }}</span>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700">Total Posts</h3>
+            <p class="text-gray-500">All your blog posts</p>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition-all duration-300">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-4 bg-green-100 rounded-full">
+                    <i class="fas fa-check-circle text-green-600 text-3xl"></i>
+                </div>
+                <span class="text-4xl font-bold text-green-600">{{ published_posts }}</span>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700">Published</h3>
+            <p class="text-gray-500">Live posts</p>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition-all duration-300">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-4 bg-yellow-100 rounded-full">
+                    <i class="fas fa-edit text-yellow-600 text-3xl"></i>
+                </div>
+                <span class="text-4xl font-bold text-yellow-600">{{ draft_posts }}</span>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700">Drafts</h3>
+            <p class="text-gray-500">Work in progress</p>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <h2 class="text-2xl font-bold mb-6 gradient-text">
+            <i class="fas fa-bolt"></i> Quick Actions
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a href="{% url 'blog:create_post' %}" class="btn-gradient text-white p-6 rounded-lg text-center hover:shadow-xl transition-all duration-300">
+                <i class="fas fa-plus-circle text-3xl mb-2"></i>
+                <p class="font-semibold">Create New Post</p>
+            </a>
+            <a href="{% url 'accounts:profile' %}" class="bg-gray-200 text-gray-700 p-6 rounded-lg text-center hover:bg-gray-300 transition-all duration-300">
+                <i class="fas fa-user text-3xl mb-2"></i>
+                <p class="font-semibold">View Profile</p>
+            </a>
+            <a href="{% url 'accounts:edit_profile' %}" class="bg-gray-200 text-gray-700 p-6 rounded-lg text-center hover:bg-gray-300 transition-all duration-300">
+                <i class="fas fa-cog text-3xl mb-2"></i>
+                <p class="font-semibold">Edit Profile</p>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Recent Posts -->
+    <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-6 gradient-text">
+            <i class="fas fa-newspaper"></i> Recent Posts
+        </h2>
+        
+        {% if recent_posts %}
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b-2 border-gray-200">
+                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Title</th>
+                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Category</th>
+                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Status</th>
+                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Views</th>
+                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Date</th>
+                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in recent_posts %}
+                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                        <td class="py-3 px-4">
+                            <a href="{% url 'blog:post_detail' post.slug %}" class="text-purple-600 hover:text-purple-800 font-semibold">
+                                {{ post.title|truncatewords:8 }}
+                            </a>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="category-badge text-white text-xs px-2 py-1 rounded-full">
+                                {{ post.category.name }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="{% if post.status == 'published' %}bg-green-100 text-green-800{% else %}bg-yellow-100 text-yellow-800{% endif %} text-xs px-2 py-1 rounded-full font-semibold">
+                                {{ post.status|title }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-gray-600">
+                            <i class="fas fa-eye"></i> {{ post.views }}
+                        </td>
+                        <td class="py-3 px-4 text-gray-600">
+                            {{ post.created_at|date:"M d, Y" }}
+                        </td>
+                        <td class="py-3 px-4">
+                            <div class="flex gap-2">
+                                <a href="{% url 'blog:edit_post' post.slug %}" class="text-blue-600 hover:text-blue-800" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'blog:delete_post' post.slug %}" class="text-red-600 hover:text-red-800" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-12">
+            <i class="fas fa-inbox text-gray-300 text-6xl mb-4"></i>
+            <p class="text-xl text-gray-500 mb-4">You haven't created any posts yet.</p>
+            <a href="{% url 'blog:create_post' %}" class="btn-gradient text-white px-6 py-3 rounded-lg inline-block font-semibold">
+                <i class="fas fa-plus"></i> Create Your First Post
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
